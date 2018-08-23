@@ -1,0 +1,138 @@
+@import url('https://fonts.googleapis.com/css?family=Source+Code+Pro');
+
+/**********************************************************/
+
+@keyframes message_tile_in {
+    from { left: -20px; opacity: 0; }
+    to   { left: 0px; opacity: 1; }
+}
+
+@keyframes shake {
+    0%   { position: relative; transform: translateX(0px) }
+    33%  { position: relative; transform: translateX(-15px) }
+    66%  { position: relative; transform: translateX(15px) }
+    100% { position: relative; transform: translateX(0px) }
+}
+
+/**********************************************************/
+
+body {
+    background-color: #263238;
+    color: white;
+    font-family: 'Source Code Pro', monospace;
+}
+
+a {
+    color: #29B6F6;
+}
+
+/**********************************************************/
+
+#f_input {
+    display: flex;
+    padding: 10px;
+    position: fixed;
+    bottom: 0px;
+    left: 0px;
+    right: 0px;
+    height: 30px;
+    width: 100%;
+    background-color: #37474F;
+}
+
+#login {
+    z-index: 1;
+    position: fixed;
+    width: 100%;
+    height: 100%;
+    top: 0px;
+    left: 0px;
+    background-color: #1565C0;
+    transition: all .75s cubic-bezier(0.79, 0.03, 1, 1);
+}
+
+#top_bar {
+    display: flex;
+    justify-content: center;
+    padding: 10px 10px;
+    position: fixed;
+    width: 100%;
+    top: 0px;
+    left: 0px;
+    background-color: #37474F;
+}
+
+#top_bar p, a {
+    margin: 0;
+    font-size: 14px;
+}
+
+#div_responses {
+    position: fixed;
+    overflow: auto;
+    width: 100%;
+    top: 39px;
+    bottom: 52px;
+}
+
+/**********************************************************/
+
+input.btn {
+    float: right;
+    padding: 5px;
+    margin: 0px 20px 0 15px;
+    border-radius: 8px;
+    background-color: #455A64;
+    border: none;
+    color: white;
+    font-family: 'Source Code Pro', monospace;
+}
+
+span.tb {
+    width: 100%;
+}
+
+input.tb {
+    overflow: hidden;
+    padding: 8px 0px;;
+    width: 100%;
+    border-radius: 8px;
+    background-color: #455A64;
+    border: none;
+    color: white;
+    font-family: 'Source Code Pro', monospace;
+}
+
+.login {
+    margin-top: 350px;
+}
+
+.textbox {
+    width: 300px; 
+    height: 20px;
+    background-color: transparent;
+    color: white; 
+    text-align: center;
+    outline: none;
+    border-bottom: 1.5px solid white;
+    border-top: 0;
+    border-left: 0;
+    border-right: 0;
+    font-family: 'Source Code Pro', monospace;
+    transition: all .25s ease-in-out;
+}
+
+.textbox:focus {
+    width: 360px;
+}
+
+.message_tile {
+    position: relative;
+    left: 0px;
+    animation: message_tile_in .25s ease-in-out;
+}
+
+.status_msg {
+    color: rgb(112, 112, 112);
+    font-style: italic;
+}

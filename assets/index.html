@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+    <title>goChat</title>
+    <link type="text/css" rel="stylesheet" href="./style.css">        
+</head>
+
+<body>
+
+    <div id="login">
+        <div class="login">
+            <center>
+                <h2>Pick a nick:</h2>
+                <form id="f_name">
+                    <input class="textbox" id="tb_name" type="text" autocomplete="off" autofocus/>
+                </form>
+            </center>
+        </div>
+    </div>
+
+    <div id="top_bar">
+        <p style="margin-right: 10px;">Connected:</p>
+        <p id="lb_connected_counter">0</p>
+        <p style="margin-left: 40px;">© 2018 zekro | <a href="https://github.com/zekrotja" target="_blank">GitHub Repo</a></p>
+    </div>
+
+    <form id="f_input">
+        <span class="tb">
+            <input class="tb" id="tb_message" type="text" autocomplete="off"/>
+        </span>
+        <input class="btn" id="btn_send" type="submit" value="SEND">
+    </form>
+
+    <div id="div_responses"></div>
+
+    <script src="./script.js"></script>
+
+</body>
+
+</html>
