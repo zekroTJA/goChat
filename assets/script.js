@@ -77,15 +77,15 @@ ws.on('message', (data) => {
 });
 
 ws.on('connected', (data) => {
-    if (data.history) {
-        console.log(data.history)
-        data.history.forEach(msg => appendMessage(msg.data));
-    }
     let elem = document.createElement('p');
     elem.innerText = `[${data.name} CONNECTED]`;
     elem.className = "message_tile status_msg";
     div_responses.appendChild(elem);
     if (data.name == myUsername) {
+        if (data.history) {
+            console.log(data.history)
+            data.history.forEach(msg => appendMessage(msg.data));
+        }
         div_login.style.top = `-${window.innerHeight}px`;
         setTimeout(() => {
             div_login.style.display = "none";
