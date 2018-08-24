@@ -56,6 +56,7 @@ var $ = (query) => document.querySelector(query);
 
 var tb_message    = $('#tb_message');
 var tb_name       = $('#tb_name');
+var tb_password   = $('#tb_password');
 var btn_send      = $('#btn_send');
 var div_responses = $('#div_responses');
 var f_input       = $('#f_input');
@@ -117,8 +118,11 @@ f_name.onsubmit = (e) => {
     }
     myUsername = tb_name.value;
     ws.emit({
-        event: 'username',
-        data:  myUsername
+        event: 'login',
+        data:  {
+            username: myUsername,
+            password: tb_password,
+        },
     });
 }
 
@@ -128,7 +132,7 @@ f_input.onsubmit = (e) => {
         return;
     ws.emit({
         event: 'message',
-        data:  tb_message.value
+        data:  tb_message.value,
     });
     tb_message.value = "";
 }

@@ -1,6 +1,10 @@
 package main
 
-import "log"
+import (
+	"log"
+
+	"github.com/boltdb/bolt"
+)
 
 const (
 	HISTORY_CAP = 200
@@ -11,11 +15,12 @@ const (
 type Chat struct {
 	Sockets map[*WebSocket][]string
 	History []*Event
+	DB      *bolt.DB
 }
 
 // NewChat creates a new instance pointer of Chat
-func NewChat() *Chat {
-	chat := &Chat{Sockets: make(map[*WebSocket][]string)}
+func NewChat(DB *bolt.DB) *Chat {
+	chat := &Chat{Sockets: make(map[*WebSocket][]string), DB: DB}
 	return chat
 }
 
