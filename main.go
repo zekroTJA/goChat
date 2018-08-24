@@ -1,11 +1,19 @@
 package main
 
 import (
+	"os"
 	"log"
+	"strings"
 	"net/http"
 )
 
 func main() {
+
+	args := os.Args[1:]
+	port := "7777"
+	if len(args) > 0 {
+		port = args[0]
+	}
 
 	// Setting up new Chat instance
 	chat := NewChat()
@@ -50,7 +58,13 @@ func main() {
 			// -> Broadcast the chat message to all users
 			ws.SetHandler("message", func(event *Event) {
 				username := chat.Sockets[ws]
-				event.Data = username + ": " + event.Data.(string)
+				if len(strings.Trim(event.Data.(string), " \t")) < 1 {
+					return
+				}
+				event.Data = map[string]interface{}{
+					"username": username,
+					"message": strings.Replace(event.Data.(string), "\\n", "\n", -1),
+				}
 				chat.Broadcast(event.Raw())
 			})
 
@@ -63,8 +77,8 @@ func main() {
 		}
 	})
 
-	log.Println("Listening...")
-	err := http.ListenAndServe(":7777", nil)
+	log.Printf("Listening on port %s ...", port)
+	err := http.ListenAndServe(":" + port, nil)
 	if err != nil {
 		log.Fatal(err)
 	}

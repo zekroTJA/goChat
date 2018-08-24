@@ -20,7 +20,7 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 
-@import url('https://fonts.googleapis.com/css?family=Source+Code+Pro');
+@import url('https://fonts.googleapis.com/css?family=Source+Code+Pro:500,700');
 
 /**********************************************************/
 
@@ -91,7 +91,7 @@ a {
 
 #div_responses {
     position: fixed;
-    overflow: auto;
+    overflow-y: scroll;
     width: 100%;
     top: 39px;
     bottom: 52px;
@@ -152,6 +152,25 @@ input.tb {
     position: relative;
     left: 0px;
     animation: message_tile_in .25s ease-in-out;
+}
+
+.message_tile .username {
+    margin-top: 10px;
+    margin-bottom: 0px;
+    font-weight: 700;
+    font-size: 15px;
+}
+
+.message_tile .message {
+    display: inline-block;
+    margin-top: 3px;
+    margin-bottom: 0px;
+    word-wrap: break-word;
+}
+
+.highlighted {
+    background-color: rgba(251, 189, 45, 0.349);
+    border-radius: 6px;
 }
 
 .status_msg {
