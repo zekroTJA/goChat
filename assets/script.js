@@ -46,7 +46,7 @@ function WsClient(url) {
     }
 }
 
-var ws = new WsClient('ws://zekro.de:7778/ws');
+var ws = new WsClient('ws://zekro.de:7777/ws');
 
 // ---------------------------------
 
