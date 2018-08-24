@@ -7,6 +7,10 @@ import (
 	"github.com/gorilla/websocket"
 )
 
+const (
+	MAX_MSG_SIZE = 5000
+)
+
 // The Upgrader will be used to upgrade a HTTP conenction
 // to a websocket connection with specified preferences.
 var upgrader = websocket.Upgrader{
@@ -40,6 +44,7 @@ func NewWebSocket(chat *Chat, w http.ResponseWriter, r *http.Request) (*WebSocke
 		log.Printf("[ERROR | SOCKET CONNECT] %v", err)
 		return nil, err
 	}
+	// conn.SetWriteDeadline(time.Now().Add(MSG_TIMEOUT))
 	ws := &WebSocket{
 		Chat: chat,
 		Conn: conn, 
@@ -62,6 +67,7 @@ func (ws *WebSocket) Reader() {
 		ws.Chat.Unregister(ws)
 		ws.Conn.Close()
 	}()
+	ws.Conn.SetReadLimit(MAX_MSG_SIZE)
 	for {
 		_, message, err := ws.Conn.ReadMessage()
 		if err != nil {

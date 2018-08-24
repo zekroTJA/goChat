@@ -22,9 +22,9 @@ func (c *Chat) Register(socket *WebSocket) {
 
 // Unregister unregisters a disconnected client
 // and closes clients channels
-func (c *Chat) Unregister(socket *WebSocket) {
+func (c *Chat) Unregister(socket *WebSocket, conerr ...bool) {
 	log.Printf("[SOCKET DISCONNECTED]")
-	if action, ok := socket.Events["disconnected"]; ok {
+	if action, ok := socket.Events["disconnected"]; ok && len(conerr) == 0 {
 		action(&Event{
 			Name: "disconnected", 
 			Data: map[string]interface{}{
@@ -33,9 +33,10 @@ func (c *Chat) Unregister(socket *WebSocket) {
 			},
 		})
 	}
-	close(socket.Out)
-	close(socket.In)
+	// close(socket.Out)
+	// close(socket.In)
 	delete(c.Sockets, socket)
+	socket.Conn.Close()
 }
 
 // Broadcast sends an event to all
@@ -45,7 +46,7 @@ func (c *Chat) Broadcast(message []byte) {
 		select {
 		case s.Out <- message:
 		default:
-			c.Unregister(s)
+			c.Unregister(s, true)
 		}
 	}
 }

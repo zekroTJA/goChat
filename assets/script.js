@@ -65,6 +65,11 @@ var userNameColor = getRandomColor();
 
 // ---------------------------------
 
+ws.ws.onclose = () => {
+    window.alert('Websocket connection closed.');
+    window.location = "/";
+}
+
 ws.on('message', (data) => {
     let div = document.createElement('div');
     div.className = "message_tile";
