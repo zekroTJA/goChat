@@ -7,6 +7,8 @@ import (
 	"github.com/gorilla/websocket"
 )
 
+// The Upgrader will be used to upgrade a HTTP conenction
+// to a websocket connection with specified preferences.
 var upgrader = websocket.Upgrader{
 	ReadBufferSize:  2048,
 	WriteBufferSize: 2048,
@@ -15,6 +17,12 @@ var upgrader = websocket.Upgrader{
 	},
 }
 
+// WebSocket containing the websocket conenction,
+// an instance pointer of Chat, which handles all
+// websocket connections, an in channel for received
+// messages and an out channel for sending messages.
+// Also it contains a map containing all registered 
+// event functions.
 type WebSocket struct {
 	Chat   *Chat
 	Conn   *websocket.Conn
@@ -23,6 +31,9 @@ type WebSocket struct {
 	Events map[string]EventHandler
 }
 
+// NewWebSocket creates a new instance of WebSocket, upgrades the HTTP 
+// connection to a websocket connection and runs the Reader and
+// Writer go routines.
 func NewWebSocket(chat *Chat, w http.ResponseWriter, r *http.Request) (*WebSocket, error) {
 	conn, err := upgrader.Upgrade(w, r, nil)
 	if err != nil {
@@ -41,6 +52,11 @@ func NewWebSocket(chat *Chat, w http.ResponseWriter, r *http.Request) (*WebSocke
 	return ws, nil
 }
 
+// Reader routine will wait for incomming messages.
+// They will be tried to be parsed to an Event object.
+// Then, the Events map will be checked if an action
+// is registered for the Event, which will be executed
+// with the events data as argument.
 func (ws *WebSocket) Reader() {
 	defer func() {
 		ws.Chat.Unregister(ws)
@@ -66,6 +82,9 @@ func (ws *WebSocket) Reader() {
 	}
 }
 
+// Writer routines waits for new Events in 
+// Out channel to be send to the conencted client
+// as binary data.
 func (ws *WebSocket) Writer() {
 	for {
 		select {
@@ -84,6 +103,10 @@ func (ws *WebSocket) Writer() {
 	}
 }
 
+// SetHandler registers a new Event by name of the
+// event and a function, which will be executed if 
+// the event fires, which will be get passed the data
+// of the event.
 func (ws *WebSocket) SetHandler(event string, action EventHandler) *WebSocket {
 	ws.Events[event] = action
 	return ws

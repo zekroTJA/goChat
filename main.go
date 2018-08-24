@@ -7,15 +7,21 @@ import (
 
 func main() {
 
+	// Setting up new Chat instance
 	chat := NewChat()
 
+	// Delivering client (website) content to root address.
 	http.Handle("/", http.FileServer(http.Dir("./assets")))
 
+	// Setting up websocket conenction path to /ws.
 	http.HandleFunc("/ws", func(w http.ResponseWriter, r *http.Request) {
 		if ws, err := NewWebSocket(chat, w, r); err == nil {
 			chat.Register(ws)
 
-			// Username Input handler
+			// USERNAME INPUT EVENT
+			// -> Checks if name is not connected yet
+			//    -> else send 'connect_reject' event
+			// -> Broadcast to all clients that user has connected
 			ws.SetHandler("username", func(event *Event) {
 				uname := event.Data.(string)
 				for _, u := range chat.Sockets {
@@ -39,12 +45,18 @@ func main() {
 				}).Raw())
 			})
 
+			// CHAT MESSAGE EVENT
+			// -> Attach username to message
+			// -> Broadcast the chat message to all users
 			ws.SetHandler("message", func(event *Event) {
 				username := chat.Sockets[ws]
 				event.Data = username + ": " + event.Data.(string)
 				chat.Broadcast(event.Raw())
 			})
 
+			// DISCONNECT EVENT
+			// -> Broadcast to all clients that 
+			//    user has disconnected
 			ws.SetHandler("disconnected", func(event *Event) {
 				chat.Broadcast(event.Raw())
 			})

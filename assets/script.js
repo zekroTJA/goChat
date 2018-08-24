@@ -48,6 +48,8 @@ function WsClient(url) {
 
 var ws = new WsClient('ws://zekro.de:7777/ws');
 
+// ---------------------------------
+
 var $ = (query) => document.querySelector(query);
 
 var tb_message    = $('#tb_message');
@@ -119,7 +121,7 @@ f_input.onsubmit = (e) => {
     tb_message.value = "";
 }
 
-// ------------------------------
+// ---------------------------------
 
 function animateRejected() {
     tb_name.style.animation = "shake .15s ease-in-out";
