@@ -33,7 +33,7 @@ func (c *Chat) Unregister(socket *WebSocket, conerr ...bool) {
 		action(&Event{
 			Name: "disconnected", 
 			Data: map[string]interface{}{
-				"name": c.Sockets[socket],
+				"name": c.Sockets[socket][0],
 				"nclients": len(c.Sockets),
 			},
 		})
