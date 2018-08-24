@@ -2,22 +2,27 @@ package main
 
 import "log"
 
+const (
+	HISTORY_CAP = 200
+)
+
 // Chat collects and handles all 
 // websocket conenctions
 type Chat struct {
-	Sockets map[*WebSocket]string
+	Sockets map[*WebSocket][]string
+	History []*Event
 }
 
 // NewChat creates a new instance pointer of Chat
 func NewChat() *Chat {
-	chat := &Chat{Sockets: make(map[*WebSocket]string)}
+	chat := &Chat{Sockets: make(map[*WebSocket][]string)}
 	return chat
 }
 
 // Register registers a new websocket connection
 func (c *Chat) Register(socket *WebSocket) {
 	log.Printf("[SOCKET CONNECTED]")
-	c.Sockets[socket] = ""
+	c.Sockets[socket] = make([]string, 2)
 }
 
 // Unregister unregisters a disconnected client
@@ -49,4 +54,12 @@ func (c *Chat) Broadcast(message []byte) {
 			c.Unregister(s, true)
 		}
 	}
+}
+
+func (c *Chat) AppendHistory(event *Event) {
+	if len(c.History) > HISTORY_CAP {
+		c.History = append(c.History[len(c.History)-HISTORY_CAP:], event)
+		return
+	}
+	c.History = append(c.History, event)
 }

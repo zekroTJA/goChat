@@ -154,11 +154,22 @@ input.tb {
     animation: message_tile_in .25s ease-in-out;
 }
 
+.message_tile .head {
+    display: flex;
+}
+
 .message_tile .username {
     margin-top: 10px;
     margin-bottom: 0px;
     font-weight: 700;
     font-size: 15px;
+}
+
+.message_tile .time {
+    margin: 12px 0px 0px 20px;
+    font-weight: 500;
+    font-size: 13px;
+    color: gray;
 }
 
 .message_tile .message {
