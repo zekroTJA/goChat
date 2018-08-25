@@ -71,11 +71,14 @@ go build -o gochat_server
 
 ---
 
-## Whished Features
+## Whished Features & Ideas
 
 - [ ] Connected Users List
 - [ ] Emojis + Emoji keywords
 - [ ] Multiple Chat Rooms
+- [ ] Deletable Messages
+- [ ] Editable Messages
+- [ ] Chat Administration
 - [ ] Light Design Mode *haha, nice joke :^)* 
 - [x] Accounts and Login
 
@@ -88,6 +91,7 @@ go build -o gochat_server
 ---
 
 © 2018 zekro Development  
+
 [ekro.de](https://zekro.de) | contact[at]zekro.de
 
 
