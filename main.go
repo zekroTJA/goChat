@@ -16,7 +16,7 @@ func main() {
 		port = args[0]
 	}
 
-	accMgr, err := NewAccountManager()
+	accMgr, err := NewAccountManager("./accDataBase.json")
 	if err != nil {
 		panic(err)
 	}

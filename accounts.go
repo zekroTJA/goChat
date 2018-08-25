@@ -8,22 +8,21 @@ import (
 	"strings"
 )
 
-const (
-	ACC_DB = "./accDataBase.json"
-)
-
 type Acc struct {
 	Username string `json:"username"`
 	Passhash string `json:"passhash"`
 }
 
 type AccountManager struct {
+	FileName string
 	accounts map[string]*Acc
 }
 
-func NewAccountManager() (*AccountManager, error) {
-	accMgr := AccountManager{make(map[string]*Acc)}
-	file, err := os.Open(ACC_DB)
+func NewAccountManager(filename string) (*AccountManager, error) {
+	accMgr := AccountManager{accounts: make(map[string]*Acc),
+		FileName: filename,
+	}
+	file, err := os.Open(filename)
 	defer file.Close()
 	if !os.IsNotExist(err) {
 		tmpMap := make(map[string]*Acc)
@@ -61,7 +60,7 @@ func (mgr *AccountManager) Check(username, password string) (*Acc, bool) {
 }
 
 func (mgr *AccountManager) Save() error {
-	file, err := os.Create(ACC_DB)
+	file, err := os.Create(mgr.FileName)
 	defer file.Close()
 	if err != nil {
 		return err
