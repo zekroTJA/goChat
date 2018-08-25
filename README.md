@@ -79,14 +79,21 @@ $ go build -o gochat_server
 - [ ] Deletable Messages
 - [ ] Editable Messages
 - [ ] Chat Administration
+- [ ] SSL Certification
 - [ ] Light Design Mode *haha, nice joke :^)* 
 - [x] Accounts and Login
 
 ---
 
-## 3rd Party Dependencies
+## 3rd Party Dependencies & Credits
 
 - [gorilla/websocket](https://github.com/gorilla/websocket)
+
+Chat Client Font:
+- [Source Code Pro](https://fonts.google.com/specimen/Source+Code+Pro) *by Paul D. Hunt*
+
+Logo Font:
+- [Montserrat](https://fonts.google.com/specimen/Montserrat) *by Julieta Ulanovsky, Sol Matas, Juan Pablo del Peral & Jacques Le Bailly*
 
 ---
 
