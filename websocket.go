@@ -25,7 +25,7 @@ var upgrader = websocket.Upgrader{
 // an instance pointer of Chat, which handles all
 // websocket connections, an in channel for received
 // messages and an out channel for sending messages.
-// Also it contains a map containing all registered 
+// Also it contains a map containing all registered
 // event functions.
 type WebSocket struct {
 	Chat   *Chat
@@ -35,7 +35,7 @@ type WebSocket struct {
 	Events map[string]EventHandler
 }
 
-// NewWebSocket creates a new instance of WebSocket, upgrades the HTTP 
+// NewWebSocket creates a new instance of WebSocket, upgrades the HTTP
 // connection to a websocket connection and runs the Reader and
 // Writer go routines.
 func NewWebSocket(chat *Chat, w http.ResponseWriter, r *http.Request) (*WebSocket, error) {
@@ -46,10 +46,10 @@ func NewWebSocket(chat *Chat, w http.ResponseWriter, r *http.Request) (*WebSocke
 	}
 	// conn.SetWriteDeadline(time.Now().Add(MSG_TIMEOUT))
 	ws := &WebSocket{
-		Chat: chat,
-		Conn: conn, 
-		Out: make(chan []byte), 
-		In: make(chan []byte), 
+		Chat:   chat,
+		Conn:   conn,
+		Out:    make(chan []byte),
+		In:     make(chan []byte),
 		Events: make(map[string]EventHandler),
 	}
 	go ws.Reader()
@@ -88,7 +88,7 @@ func (ws *WebSocket) Reader() {
 	}
 }
 
-// Writer routines waits for new Events in 
+// Writer routines waits for new Events in
 // Out channel to be send to the conencted client
 // as binary data.
 func (ws *WebSocket) Writer() {
@@ -110,7 +110,7 @@ func (ws *WebSocket) Writer() {
 }
 
 // SetHandler registers a new Event by name of the
-// event and a function, which will be executed if 
+// event and a function, which will be executed if
 // the event fires, which will be get passed the data
 // of the event.
 func (ws *WebSocket) SetHandler(event string, action EventHandler) *WebSocket {

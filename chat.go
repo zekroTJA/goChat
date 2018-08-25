@@ -2,25 +2,26 @@ package main
 
 import (
 	"log"
-
-	"github.com/boltdb/bolt"
 )
 
 const (
 	HISTORY_CAP = 200
 )
 
-// Chat collects and handles all 
+// Chat collects and handles all
 // websocket conenctions
 type Chat struct {
 	Sockets map[*WebSocket][]string
 	History []*Event
-	DB      *bolt.DB
+	AccMgr  *AccountManager
 }
 
 // NewChat creates a new instance pointer of Chat
-func NewChat(DB *bolt.DB) *Chat {
-	chat := &Chat{Sockets: make(map[*WebSocket][]string), DB: DB}
+func NewChat(accMgr *AccountManager) *Chat {
+	chat := &Chat{
+		Sockets: make(map[*WebSocket][]string),
+		AccMgr:  accMgr,
+	}
 	return chat
 }
 
@@ -36,9 +37,9 @@ func (c *Chat) Unregister(socket *WebSocket, conerr ...bool) {
 	log.Printf("[SOCKET DISCONNECTED]")
 	if action, ok := socket.Events["disconnected"]; ok && len(conerr) == 0 {
 		action(&Event{
-			Name: "disconnected", 
+			Name: "disconnected",
 			Data: map[string]interface{}{
-				"name": c.Sockets[socket][0],
+				"name":     c.Sockets[socket][0],
 				"nclients": len(c.Sockets),
 			},
 		})

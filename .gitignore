@@ -1,1 +1,4 @@
-"*.exe" 
+*.exe 
+.vscode/*
+test*
+accDataBase.json

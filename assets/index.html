@@ -36,8 +36,19 @@ SOFTWARE.
             <center>
                 <h2>Login</h2>
                 <form id="f_name">
-                    <input class="textbox" id="tb_name" type="text" autocomplete="off" autofocus/>
-                    <input class="textbox" id="tb_password" type="text" autocomplete="off" autofocus/>
+                    <input class="textbox" id="tb_name" type="text" autocomplete="off" autofocus placeholder="username"/>
+                    <br>
+                    <br>
+                    <input class="textbox" id="tb_password" type="password" autocomplete="off" autofocus placeholder="password"/>
+                    <br>
+                    <br>
+                    <input class="button" id="bt_login" type="submit" value="LOGIN"/>
+                    <div id="acc_create">
+                        <p>
+                            Username does not exist.<br>
+                            Account will be created with entered password.
+                        </p>
+                    </div>
                 </form>
             </center>
         </div>
@@ -46,7 +57,7 @@ SOFTWARE.
     <div id="top_bar">
         <p style="margin-right: 10px;">Connected:</p>
         <p id="lb_connected_counter">0</p>
-        <p style="margin-left: 40px;">goChat v.1.2.1</a></p>
+        <p style="margin-left: 40px;">goChat v.1.3.0</a></p>
         <p style="margin-left: 40px;">© 2018 zekro | <a href="https://github.com/zekrotja/goChat" target="_blank">GitHub Repo</a></p>
     </div>
 
