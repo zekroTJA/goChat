@@ -54,13 +54,15 @@ var ws = new WsClient(
 
 var $ = (query) => document.querySelector(query);
 
-var tb_message    = $('#tb_message');
-var tb_name       = $('#tb_name');
-var btn_send      = $('#btn_send');
-var div_responses = $('#div_responses');
-var f_input       = $('#f_input');
-var div_login     = $('#login');
-var lb_connected  = $('#lb_connected_counter');
+var tb_message        = $('#tb_message');
+var tb_name           = $('#tb_name');
+var tb_password       = $('#tb_password');
+var btn_send          = $('#btn_send');
+var div_responses     = $('#div_responses');
+var f_input           = $('#f_input');
+var div_login         = $('#login');
+var div_acc_create    = $('#acc_create');
+var lb_connected      = $('#lb_connected_counter');
 
 var lastMsgUsername = "";
 var myUsername = 
@@ -70,7 +72,7 @@ var myUsername =
 ws.ws.onclose = () => {
     window.alert('Websocket connection closed.');
     window.location = "/";
-}
+};
 
 ws.on('message', (data) => {
     appendMessage(data);
@@ -107,20 +109,46 @@ ws.on('disconnected', (data) => {
     elem.className = "message_tile status_msg";
     div_responses.appendChild(elem);
     lb_connected.innerText = data.nclients;
-})
+});
+
+ws.on('usernameState', (data) => {
+    div_acc_create.style.top     = data ? "50px" : "0px";
+    div_acc_create.style.opacity = data ? 0 : 1;
+
+});
 
 f_name.onsubmit = (e) => {
     e.preventDefault();
-    if (tb_name.value.length < 1) {
+    if (tb_name.value.length < 1 || tb_password.value.length < 1) {
         animateRejected();
         return;
     }
     myUsername = tb_name.value;
     ws.emit({
-        event: 'username',
-        data:  myUsername
+        event: 'login',
+        data:  {
+            username: myUsername,
+            password: tb_password.value,
+        },
     });
-}
+};
+
+tb_name.oninput = (e) => {
+    let cvalue = e.target.value;
+    setTimeout(() => {
+        if (tb_name.value.length < 1) {
+            div_acc_create.style.top     = "50px";
+            div_acc_create.style.opacity = 0;
+            return;
+        }
+        if (tb_name.value == cvalue) {
+            ws.emit({
+                event: 'checkUsername',
+                data:  cvalue
+            });
+        }
+    }, 300);
+};
 
 f_input.onsubmit = (e) => {
     e.preventDefault();
@@ -128,10 +156,10 @@ f_input.onsubmit = (e) => {
         return;
     ws.emit({
         event: 'message',
-        data:  tb_message.value
+        data:  tb_message.value,
     });
     tb_message.value = "";
-}
+};
 
 // ---------------------------------
 

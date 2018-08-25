@@ -98,6 +98,19 @@ a {
     padding-bottom: 10px;
 }
 
+#acc_create {
+    background-color: rgb(49, 134, 231);
+    margin-top: 30px;
+    position: relative;
+    top: 50px;
+    opacity: 0;
+    transition: all .25s ease-in-out;
+}
+
+#acc_create p {
+    padding: 5px 0px;
+}
+
 /**********************************************************/
 
 input.btn {
@@ -127,7 +140,7 @@ input.tb {
 }
 
 .login {
-    margin-top: 350px;
+    margin-top: 300px;
 }
 
 .textbox {
@@ -188,4 +201,17 @@ input.tb {
 .status_msg {
     color: rgb(112, 112, 112);
     font-style: italic;
+}
+
+.button {
+    margin-top: 20px;
+    height: 25px;
+    width: 70px;
+    background-color: transparent;
+    color: white;
+    outline: none;
+    border: 1.5px solid white;
+    font-family: 'Source Code Pro', monospace;
+    transition: .25s ease;
+    cursor: pointer;
 }

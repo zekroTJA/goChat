@@ -1,6 +1,8 @@
 package main
 
-import "log"
+import (
+	"log"
+)
 
 const (
 	HISTORY_CAP = 200
@@ -11,11 +13,15 @@ const (
 type Chat struct {
 	Sockets map[*WebSocket][]string
 	History []*Event
+	AccMgr  *AccountManager
 }
 
 // NewChat creates a new instance pointer of Chat
-func NewChat() *Chat {
-	chat := &Chat{Sockets: make(map[*WebSocket][]string)}
+func NewChat(accMgr *AccountManager) *Chat {
+	chat := &Chat{
+		Sockets: make(map[*WebSocket][]string),
+		AccMgr:  accMgr,
+	}
 	return chat
 }
 
