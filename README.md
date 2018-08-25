@@ -52,14 +52,14 @@ Of course, you need to use the name of your binary downloaded. The port the serv
 
 To compile it by yourself, use following commands:
 
-```
-git clone https://github.com/zekroTJA/goChat
-cd goChat
+```bash
+$ git clone https://github.com/zekroTJA/goChat
+$ cd goChat
 # if you want to use the latest features:
-git checkout new_features
+$ git checkout new_features
 # of course, GOPATH needs to be set before
-go get github.com/gorilla/websocket
-go build -o gochat_server
+$ go get github.com/gorilla/websocket
+$ go build -o gochat_server
 ```
 
 ---
@@ -92,6 +92,6 @@ go build -o gochat_server
 
 © 2018 zekro Development  
 
-[ekro.de](https://zekro.de) | contact[at]zekro.de
+[zekro.de](https://zekro.de) | contact[at]zekro.de
 
 
