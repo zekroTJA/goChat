@@ -6,7 +6,7 @@ const (
 	HISTORY_CAP = 200
 )
 
-// Chat collects and handles all 
+// Chat collects and handles all
 // websocket conenctions
 type Chat struct {
 	Sockets map[*WebSocket][]string
@@ -31,9 +31,9 @@ func (c *Chat) Unregister(socket *WebSocket, conerr ...bool) {
 	log.Printf("[SOCKET DISCONNECTED]")
 	if action, ok := socket.Events["disconnected"]; ok && len(conerr) == 0 {
 		action(&Event{
-			Name: "disconnected", 
+			Name: "disconnected",
 			Data: map[string]interface{}{
-				"name": c.Sockets[socket][0],
+				"name":     c.Sockets[socket][0],
 				"nclients": len(c.Sockets),
 			},
 		})
