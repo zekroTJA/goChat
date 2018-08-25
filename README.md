@@ -11,6 +11,12 @@
 
 ---
 
+## First Things First
+
+**Attention:** In the master branch is only the code for the default standard setup without further features. For the current features code, switch to branch [new_features](https://github.com/zekroTJA/goChat/tree/new_features).
+
+---
+
 ## Motivation
 
 Currently, I am trying to get into Go and gorilla/websocket, so, I created this little project to test around with a self-created event system and socket communication. Also for some fontend training, of course ;)
