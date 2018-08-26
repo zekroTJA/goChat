@@ -193,7 +193,7 @@ function appendMessage(msgEvent) {
         div.appendChild(divTitle);
     }
     let message = document.createElement('p');
-    message.innerText = msgEvent.message;
+    message.innerHTML = replaceLinks(msgEvent.message);
     message.className = 'message';
     if (msgEvent.message.includes('@' + myUsername)) {
         message.className += ' highlighted';
@@ -211,6 +211,14 @@ function updateUsersList(usersMap) {
         elem.style.color = usersMap[uname];
         elem.innerText = uname;
         ul_users_list.appendChild(elem);
+    });
+}
+
+function replaceLinks(message) {
+    return message.replace(/((https?:\/\/)?(www.)?\w+\.\w+)/gm, function(a) {
+        if (!a.startsWith('http://') && !a.startsWith('https://'))
+            a = "https://" + a;
+        return `<a href="${a}" target="_blank">${a}</a>`;
     });
 }
 
