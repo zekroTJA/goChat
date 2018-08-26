@@ -19,7 +19,8 @@ type AccountManager struct {
 }
 
 func NewAccountManager(filename string) (*AccountManager, error) {
-	accMgr := AccountManager{accounts: make(map[string]*Acc),
+	accMgr := AccountManager{
+		accounts: make(map[string]*Acc),
 		FileName: filename,
 	}
 	file, err := os.Open(filename)

@@ -36,12 +36,12 @@ function WsClient(url) {
         try {
             let data = JSON.parse(response.data);
             if (data) {
-                let cb = this.eventListener[data.event]
+                let cb = this.eventListener[data.event];
                 if (cb)
-                    cb(data.data)
+                    cb(data.data);
             }
         } catch (e) {
-            console.log(e)
+            console.log(e);
         }
     }
 }
@@ -63,6 +63,7 @@ var f_input           = $('#f_input');
 var div_login         = $('#login');
 var div_acc_create    = $('#acc_create');
 var lb_connected      = $('#lb_connected_counter');
+var ul_users_list     = $('#ul_users_list');
 
 var lastMsgUsername = "";
 var myUsername = 
@@ -81,8 +82,9 @@ ws.on('message', (data) => {
 ws.on('connected', (data) => {
     let elem = document.createElement('p');
     elem.innerText = `[${data.name} CONNECTED]`;
-    elem.className = "message_tile status_msg";
+    elem.className = 'message_tile status_msg';
     div_responses.appendChild(elem);
+    updateUsersList(data.clients);
     if (data.name == myUsername) {
         if (data.history) {
             console.log(data.history)
@@ -106,13 +108,14 @@ ws.on('connect_rejected', () => {
 ws.on('disconnected', (data) => {
     let elem = document.createElement('p');
     elem.innerText = `[${data.name} DISCONNECTED]`;
-    elem.className = "message_tile status_msg";
+    elem.className = 'message_tile status_msg';
     div_responses.appendChild(elem);
+    updateUsersList(data.clients);
     lb_connected.innerText = data.nclients;
 });
 
 ws.on('usernameState', (data) => {
-    div_acc_create.style.top     = data ? "50px" : "0px";
+    div_acc_create.style.top     = data ? '50px' : '0px';
     div_acc_create.style.opacity = data ? 0 : 1;
 
 });
@@ -137,7 +140,7 @@ tb_name.oninput = (e) => {
     let cvalue = e.target.value;
     setTimeout(() => {
         if (tb_name.value.length < 1) {
-            div_acc_create.style.top     = "50px";
+            div_acc_create.style.top     = '50px';
             div_acc_create.style.opacity = 0;
             return;
         }
@@ -158,42 +161,42 @@ f_input.onsubmit = (e) => {
         event: 'message',
         data:  tb_message.value,
     });
-    tb_message.value = "";
+    tb_message.value = '';
 };
 
 // ---------------------------------
 
 function animateRejected() {
-    tb_name.style.animation = "shake .15s ease-in-out";
-    setTimeout(() => tb_name.style.animation = "", 150);
+    tb_name.style.animation = 'shake .15s ease-in-out';
+    setTimeout(() => tb_name.style.animation = '', 150);
 }
 
 function appendMessage(msgEvent) {
     let div = document.createElement('div');
-    div.className = "message_tile";
+    div.className = 'message_tile';
 
     let divTitle = document.createElement('div');
-    divTitle.className = "head";
+    divTitle.className = 'head';
 
     if (lastMsgUsername != msgEvent.username) {
         let uname = document.createElement('p');
         uname.innerText = msgEvent.username;
-        uname.className = "username";
+        uname.className = 'username';
         uname.style.color = msgEvent.color;
         divTitle.appendChild(uname);
 
         let time = document.createElement('p');
         time.innerText = getTime(msgEvent.timestamp);
-        time.className = "time";
+        time.className = 'time';
         divTitle.appendChild(time);
 
         div.appendChild(divTitle);
     }
     let message = document.createElement('p');
     message.innerText = msgEvent.message;
-    message.className = "message";
+    message.className = 'message';
     if (msgEvent.message.includes('@' + myUsername)) {
-        message.className += " highlighted";
+        message.className += ' highlighted';
     }
     div.appendChild(message);
     div_responses.appendChild(div);
@@ -201,10 +204,20 @@ function appendMessage(msgEvent) {
     lastMsgUsername = msgEvent.username;
 }
 
+function updateUsersList(usersMap) {
+    ul_users_list.innerHTML = '';
+    Object.keys(usersMap).forEach(uname => {
+        let elem = document.createElement('li');
+        elem.style.color = usersMap[uname];
+        elem.innerText = uname;
+        ul_users_list.appendChild(elem);
+    });
+}
+
 function getTime(timestamp) {
     function btf(inp) {
     	if (inp < 10)
-	    return "0" + inp;
+	    return '0' + inp;
     	return inp;
     }
     var date = new Date(timestamp * 1000),

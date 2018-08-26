@@ -12,6 +12,7 @@ const (
 // websocket conenctions
 type Chat struct {
 	Sockets map[*WebSocket][]string
+	Users   map[string]string
 	History []*Event
 	AccMgr  *AccountManager
 }
@@ -20,6 +21,7 @@ type Chat struct {
 func NewChat(accMgr *AccountManager) *Chat {
 	chat := &Chat{
 		Sockets: make(map[*WebSocket][]string),
+		Users:   make(map[string]string),
 		AccMgr:  accMgr,
 	}
 	return chat

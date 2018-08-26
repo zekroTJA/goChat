@@ -55,11 +55,13 @@ func main() {
 					return
 				}
 				chat.Sockets[ws] = []string{uname, UtilGetRandomColor()}
+				chat.Users[chat.Sockets[ws][0]] = chat.Sockets[ws][1]
 				chat.Broadcast((&Event{
 					Name: "connected",
 					Data: map[string]interface{}{
 						"name":     chat.Sockets[ws][0],
 						"nclients": len(chat.Sockets),
+						"clients":  chat.Users,
 						"history":  chat.History,
 					},
 				}).Raw())
@@ -100,6 +102,11 @@ func main() {
 			// -> Broadcast to all clients that
 			//    user has disconnected
 			ws.SetHandler("disconnected", func(event *Event) {
+				dataMap := event.Data.(map[string]interface{})
+				uname := dataMap["name"].(string)
+				delete(chat.Users, uname)
+				dataMap["clients"] = chat.Users
+				event.Data = dataMap
 				chat.Broadcast(event.Raw())
 			})
 		}

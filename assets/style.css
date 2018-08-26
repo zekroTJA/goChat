@@ -111,6 +111,30 @@ a {
     padding: 5px 0px;
 }
 
+#users_list {
+    position: fixed;
+    top: 49px;
+    right: 20px;
+    padding: 5px;
+    background-color: #37474F;
+}
+
+#users_list p {
+    margin: 0;
+}
+
+#users_list ul {
+    list-style-type: none;
+    margin: 0px;
+    padding: 5px 10px;
+}
+
+#users_list h3 {
+    font-size: 14px;
+    margin: 0;
+    padding: 5px 10px;
+}
+
 /**********************************************************/
 
 input.btn {
