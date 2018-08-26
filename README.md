@@ -73,15 +73,18 @@ $ go build -o gochat_server
 
 ## Whished Features & Ideas
 
-- [ ] Connected Users List
 - [ ] Emojis + Emoji keywords
 - [ ] Multiple Chat Rooms
+- [ ] Logo as Favicon
 - [ ] Deletable Messages
 - [ ] Editable Messages
 - [ ] Chat Administration
 - [ ] SSL Certification
 - [ ] Light Design Mode *haha, nice joke :^)* 
-- [x] Accounts and Login
+- [x] Connected Users List `(1.4)`
+- [x] Link Highlighting `(1.4)`
+- [x] Mentions `(1.3)`
+- [x] Accounts and Login `(1.3)`
 
 ---
 
