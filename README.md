@@ -19,7 +19,7 @@
 
 ## Motivation
 
-Currently, I am trying to get into Go and gorilla/websocket, so, I created this little project to test around with a self-created event system and socket communication. Also for some fontend training, of course ;)
+Currently, I am trying to get into Go and gorilla/websocket, so, I created this little project to test around with a self-created event system and socket communication. Also for some frontend training, of course ;)
 
 ---
 
@@ -29,7 +29,7 @@ This chat is based on a self-hostet server component and browser-driven web clie
 
 > If you want to compile the binaries by yourself, take a look [below](#self-compiling).
 
-Download the pre-compiled binaries and place them somewhere on your server. **Attention:** The web client assets provided by the integrated HTTP server are not included in the binaries and deed to be placed right next to the binary like in following example setup:
+Download the pre-compiled binaries and place them somewhere on your server. **Attention:** The web client assets provided by the integrated HTTP server are not included in the binaries and needs to be placed right next to the binary like in following example setup:
 
 ```
 goChat/
@@ -44,7 +44,7 @@ After that, you can run the server component by entering following command:
 ```
 ./gochat_server 7777
 ```
-Of course, you need to use the name of your binary downloaded. The port the server is accessable on is set as first argument. Defaultly, if no agrument is passed, the port 7777 will be used.
+Of course, you need to use the name of your binary downloaded. The port, the server is accessable on, is set as first argument. Defaultly, if no agrument is passed, the port `7777` will be used.
 
 ---
 
