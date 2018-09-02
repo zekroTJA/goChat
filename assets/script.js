@@ -54,26 +54,26 @@ var ws = new WsClient(
 
 var $ = (query) => document.querySelector(query);
 
-var tb_message        = $('#tb_message');
-var tb_name           = $('#tb_name');
-var tb_password       = $('#tb_password');
-var btn_send          = $('#btn_send');
-var div_responses     = $('#div_responses');
-var f_input           = $('#f_input');
-var div_login         = $('#login');
-var div_acc_create    = $('#acc_create');
-var lb_connected      = $('#lb_connected_counter');
-var ul_users_list     = $('#ul_users_list');
+var tb_message = $('#tb_message');
+var tb_name = $('#tb_name');
+var tb_password = $('#tb_password');
+var btn_send = $('#btn_send');
+var div_responses = $('#div_responses');
+var f_input = $('#f_input');
+var div_login = $('#login');
+var div_acc_create = $('#acc_create');
+var lb_connected = $('#lb_connected_counter');
+var ul_users_list = $('#ul_users_list');
 
 var lastMsgUsername = "";
-var myUsername = 
+var myUsername =
 
-// ---------------------------------
+    // ---------------------------------
 
-ws.ws.onclose = () => {
-    window.alert('Websocket connection closed.');
-    window.location = "/";
-};
+    ws.ws.onclose = () => {
+        window.alert('Websocket connection closed.');
+        window.location = "/";
+    };
 
 ws.on('message', (data) => {
     appendMessage(data);
@@ -115,7 +115,7 @@ ws.on('disconnected', (data) => {
 });
 
 ws.on('usernameState', (data) => {
-    div_acc_create.style.top     = data ? '50px' : '0px';
+    div_acc_create.style.top = data ? '50px' : '0px';
     div_acc_create.style.opacity = data ? 0 : 1;
 
 });
@@ -129,7 +129,7 @@ f_name.onsubmit = (e) => {
     myUsername = tb_name.value;
     ws.emit({
         event: 'login',
-        data:  {
+        data: {
             username: myUsername,
             password: tb_password.value,
         },
@@ -140,14 +140,14 @@ tb_name.oninput = (e) => {
     let cvalue = e.target.value;
     setTimeout(() => {
         if (tb_name.value.length < 1) {
-            div_acc_create.style.top     = '50px';
+            div_acc_create.style.top = '50px';
             div_acc_create.style.opacity = 0;
             return;
         }
         if (tb_name.value == cvalue) {
             ws.emit({
                 event: 'checkUsername',
-                data:  cvalue
+                data: cvalue
             });
         }
     }, 300);
@@ -159,7 +159,7 @@ f_input.onsubmit = (e) => {
         return;
     ws.emit({
         event: 'message',
-        data:  tb_message.value,
+        data: tb_message.value,
     });
     tb_message.value = '';
 };
@@ -197,6 +197,17 @@ function appendMessage(msgEvent) {
     message.className = 'message';
     if (msgEvent.message.includes('@' + myUsername)) {
         message.className += ' highlighted';
+        if (!("Notification" in window)) {
+            alert("This browser does not support desktop notification");
+        } else if (Notification.permission === "granted") {
+            var notification = new Notification("You got pinged");
+        } else if (Notification.permission !== "denied") {
+            Notification.requestPermission(function (permission) {
+                if (permission === "granted") {
+                    var notification = new Notification("You got pinged");
+                }
+            });
+        }
     }
     div.appendChild(message);
     div_responses.appendChild(div);
@@ -215,7 +226,7 @@ function updateUsersList(usersMap) {
 }
 
 function replaceLinks(message) {
-    return message.replace(/((https?:\/\/)?(www.)?\w+\.\w+)/gm, function(a) {
+    return message.replace(/((https?:\/\/)?(www.)?\w+\.\w+)/gm, function (a) {
         if (!a.startsWith('http://') && !a.startsWith('https://'))
             a = "https://" + a;
         return `<a href="${a}" target="_blank">${a}</a>`;
@@ -224,16 +235,16 @@ function replaceLinks(message) {
 
 function getTime(timestamp) {
     function btf(inp) {
-    	if (inp < 10)
-	    return '0' + inp;
-    	return inp;
+        if (inp < 10)
+            return '0' + inp;
+        return inp;
     }
     var date = new Date(timestamp * 1000),
         y = date.getFullYear(),
         m = btf(date.getMonth() + 1),
-	    d = btf(date.getDate()),
-	    h = btf(date.getHours()),
-	    min = btf(date.getMinutes()),
-	    s = btf(date.getSeconds());
+        d = btf(date.getDate()),
+        h = btf(date.getHours()),
+        min = btf(date.getMinutes()),
+        s = btf(date.getSeconds());
     return `${d}.${m}.${y} - ${h}:${min}:${s}`;
 }
