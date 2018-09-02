@@ -17,6 +17,19 @@ type Chat struct {
 	AccMgr  *AccountManager
 }
 
+type Author struct {
+	ID       string `json:"id"`
+	Username string `json:"username"`
+	Color    string `json:"color"`
+}
+
+type Message struct {
+	ID        string  `json:"id"`
+	Content   string  `json:"content"`
+	Author    *Author `json:"author"`
+	Timestamp int     `json:"timestamp"`
+}
+
 // NewChat creates a new instance pointer of Chat
 func NewChat(accMgr *AccountManager) *Chat {
 	chat := &Chat{

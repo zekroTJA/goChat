@@ -88,6 +88,7 @@ func main() {
 				if len(strings.Trim(event.Data.(string), " \t")) < 1 {
 					return
 				}
+				// event.Data = &Message{}
 				event.Data = map[string]interface{}{
 					"username":  username,
 					"timestamp": time.Now().Unix(),
