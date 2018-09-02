@@ -217,6 +217,16 @@ input.tb {
     word-wrap: break-word;
 }
 
+.message_tile .deleteLink {
+    font-size: 10px;
+    color: rgb(165, 165, 165);
+    display: none;
+}
+
+.message_tile:hover .deleteLink {
+    display: block;
+}
+
 .highlighted {
     background-color: rgba(251, 189, 45, 0.349);
     border-radius: 6px;

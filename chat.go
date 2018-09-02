@@ -11,29 +11,29 @@ const (
 // Chat collects and handles all
 // websocket conenctions
 type Chat struct {
-	Sockets map[*WebSocket][]string
+	Sockets map[*WebSocket]*Author
 	Users   map[string]string
 	History []*Event
 	AccMgr  *AccountManager
 }
 
 type Author struct {
-	ID       string `json:"id"`
+	ID       int64  `json:"id"`
 	Username string `json:"username"`
 	Color    string `json:"color"`
 }
 
 type Message struct {
-	ID        string  `json:"id"`
+	ID        int64   `json:"id"`
 	Content   string  `json:"content"`
 	Author    *Author `json:"author"`
-	Timestamp int     `json:"timestamp"`
+	Timestamp int64   `json:"timestamp"`
 }
 
 // NewChat creates a new instance pointer of Chat
 func NewChat(accMgr *AccountManager) *Chat {
 	chat := &Chat{
-		Sockets: make(map[*WebSocket][]string),
+		Sockets: make(map[*WebSocket]*Author),
 		Users:   make(map[string]string),
 		AccMgr:  accMgr,
 	}
@@ -43,7 +43,7 @@ func NewChat(accMgr *AccountManager) *Chat {
 // Register registers a new websocket connection
 func (c *Chat) Register(socket *WebSocket) {
 	log.Printf("[SOCKET CONNECTED]")
-	c.Sockets[socket] = make([]string, 2)
+	c.Sockets[socket] = &Author{}
 }
 
 // Unregister unregisters a disconnected client
@@ -54,7 +54,7 @@ func (c *Chat) Unregister(socket *WebSocket, conerr ...bool) {
 		action(&Event{
 			Name: "disconnected",
 			Data: map[string]interface{}{
-				"name":     c.Sockets[socket][0],
+				"name":     c.Sockets[socket].Username,
 				"nclients": len(c.Sockets),
 			},
 		})

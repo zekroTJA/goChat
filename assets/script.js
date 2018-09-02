@@ -66,7 +66,7 @@ var lb_connected      = $('#lb_connected_counter');
 var ul_users_list     = $('#ul_users_list');
 
 var lastMsgUsername = "";
-var myUsername = 
+var myUsername = "";
 
 // ---------------------------------
 
@@ -178,11 +178,11 @@ function appendMessage(msgEvent) {
     let divTitle = document.createElement('div');
     divTitle.className = 'head';
 
-    if (lastMsgUsername != msgEvent.username) {
+    if (lastMsgUsername != msgEvent.author.username) {
         let uname = document.createElement('p');
-        uname.innerText = msgEvent.username;
+        uname.innerText = msgEvent.author.username;
         uname.className = 'username';
-        uname.style.color = msgEvent.color;
+        uname.style.color = msgEvent.author.color;
         divTitle.appendChild(uname);
 
         let time = document.createElement('p');
@@ -192,16 +192,29 @@ function appendMessage(msgEvent) {
 
         div.appendChild(divTitle);
     }
+
     let message = document.createElement('p');
-    message.innerHTML = replaceLinks(msgEvent.message);
+    message.innerHTML = replaceLinks(msgEvent.content);
     message.className = 'message';
-    if (msgEvent.message.includes('@' + myUsername)) {
+    if (msgEvent.content.includes('@' + myUsername)) {
         message.className += ' highlighted';
     }
+
     div.appendChild(message);
+
+    if (msgEvent.author.username == myUsername) {
+        let messageActionDiv = document.createElement('div');
+        let deleteLink = document.createElement('a');
+        deleteLink.href = "javasctipt:{}";
+        deleteLink.innerText = "remove";
+        deleteLink.className = "deleteLink";
+        messageActionDiv.appendChild(deleteLink);
+        div.appendChild(messageActionDiv);
+    }
+
     div_responses.appendChild(div);
     div.scrollIntoView();
-    lastMsgUsername = msgEvent.username;
+    lastMsgUsername = msgEvent.author.username;
 }
 
 function updateUsersList(usersMap) {
