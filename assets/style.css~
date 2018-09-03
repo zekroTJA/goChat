@@ -217,6 +217,7 @@ input.tb {
     word-wrap: break-word;
 }
 
+<<<<<<< HEAD
 .message_tile .deleteLink {
     font-size: 10px;
     color: rgb(165, 165, 165);
@@ -225,10 +226,10 @@ input.tb {
 
 .message_tile:hover .deleteLink {
     display: block;
-}
-
+=======
 .message_tile .message p {
     margin: 0;
+>>>>>>> pr
 }
 
 .highlighted {
