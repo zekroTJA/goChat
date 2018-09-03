@@ -217,7 +217,7 @@ input.tb {
     word-wrap: break-word;
 }
 
-.message_tile .message p {
+.message_tile .message {
     margin: 0;
 }
 
