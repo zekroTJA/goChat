@@ -172,7 +172,7 @@ function animateRejected() {
 }
 
 function appendMessage(msgEvent) {
-    var converter = new showdown.Converter();
+    var converter = new showdown.Converter({headerLevelStart: 3, strikethrough: true, emoji: true, underline: true,});
     let div = document.createElement('div');
     div.className = 'message_tile';
 
