@@ -233,7 +233,7 @@ function appendMessage(msgEvent) {
         } else if (Notification.permission !== "denied") {
             Notification.requestPermission(function (permission) {
                 if (permission === "granted") {
-                    var notification = new Notification("You got pinged, ops");
+                    var notification = new Notification("You got pinged", ops);
                 }
             });
         }
