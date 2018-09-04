@@ -107,6 +107,20 @@ func main() {
 				chat.AppendHistory(event)
 			})
 
+			ws.SetHandler("deleteMessage", func(event *Event) {
+				msgID := int64(event.Data.(float64))
+				msg, i := chat.GetMessageByID(msgID)
+				if msg == nil {
+					return
+				}
+				chat.History = append(chat.History[:i], chat.History[i+1:]...)
+				eventOut := &Event{
+					Name: "messageDeleted",
+					Data: msg,
+				}
+				chat.Broadcast(eventOut.Raw())
+			})
+
 			// DISCONNECT EVENT
 			// -> Broadcast to all clients that
 			//    user has disconnected

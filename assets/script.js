@@ -20,6 +20,19 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 
+Element.prototype.remove = function() {
+    this.parentElement.removeChild(this);
+}
+NodeList.prototype.remove = HTMLCollection.prototype.remove = function() {
+    for(var i = this.length - 1; i >= 0; i--) {
+        if(this[i] && this[i].parentElement) {
+            this[i].parentElement.removeChild(this[i]);
+        }
+    }
+}
+
+// ------------------------------------------------------
+
 function WsClient(url) {
     this.ws = new WebSocket(url);
 
@@ -106,6 +119,13 @@ ws.on('connect_rejected', () => {
     animateRejected();
 });
 
+ws.on('messageDeleted', (data) => {
+    let msg = $('#message' + data.data.id);
+    let container = $('#container' + data.data.id);
+    msg.innerHTML = '<p class="status_msg">deleted</p>';
+    container.getElementsByClassName('deleteLink')[0].remove();
+});
+
 ws.on('disconnected', (data) => {
     let elem = document.createElement('p');
     elem.innerText = `[${data.name} DISCONNECTED]`;
@@ -176,6 +196,7 @@ function appendMessage(msgEvent) {
     var converter = new showdown.Converter({headerLevelStart: 3, strikethrough: true, emoji: true, underline: true,});
     let div = document.createElement('div');
     div.className = 'message_tile';
+    div.id = 'container' + msgEvent.id;
 
     let divTitle = document.createElement('div');
     divTitle.className = 'head';
@@ -195,6 +216,7 @@ function appendMessage(msgEvent) {
         div.appendChild(divTitle);
     }
     let message = document.createElement('div');
+    message.id = 'message' + msgEvent.id;
     let converted = converter.makeHtml(msgEvent.content);
     message.innerHTML = converted;
     message.className = 'message';
@@ -218,9 +240,15 @@ function appendMessage(msgEvent) {
     if (msgEvent.author.username == myUsername) {
         let messageActionDiv = document.createElement('div');
         let deleteLink = document.createElement('a');
-        deleteLink.href = "javasctipt:{}";
+        //deleteLink.href = "javasctipt:{}";
+        deleteLink.onclick = () => {
+            ws.emit({
+                event: 'deleteMessage',
+                data: msgEvent.id
+            });
+        };
         deleteLink.innerText = "remove";
-        deleteLink.className = "deleteLink";
+        messageActionDiv.className = "deleteLink";
         messageActionDiv.appendChild(deleteLink);
         div.appendChild(messageActionDiv);
     }

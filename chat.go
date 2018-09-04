@@ -84,3 +84,18 @@ func (c *Chat) AppendHistory(event *Event) {
 	}
 	c.History = append(c.History, event)
 }
+
+func (c *Chat) FetchMessage(ident func(*Event) bool) (*Event, int) {
+	for i, msg := range c.History {
+		if ident(msg) {
+			return msg, i
+		}
+	}
+	return nil, -1
+}
+
+func (c *Chat) GetMessageByID(id int64) (*Event, int) {
+	return c.FetchMessage(func(e *Event) bool {
+		return (e.Data.(*Message).ID == id)
+	})
+}
