@@ -6,6 +6,8 @@ import (
 	"os"
 	"strings"
 	"time"
+
+	"github.com/bwmarrin/snowflake"
 )
 
 func main() {
@@ -24,6 +26,9 @@ func main() {
 
 	// Setting up new Chat instance
 	chat := NewChat(accMgr)
+
+	authorNode, _ := snowflake.NewNode(0)
+	messageNode, _ := snowflake.NewNode(1)
 
 	// Delivering client (website) content to root address.
 	http.Handle("/", http.FileServer(http.Dir("./assets")))
@@ -54,12 +59,16 @@ func main() {
 					}()
 					return
 				}
-				chat.Sockets[ws] = []string{uname, UtilGetRandomColor()}
-				chat.Users[chat.Sockets[ws][0]] = chat.Sockets[ws][1]
+				chat.Sockets[ws] = &Author{
+					ID:       authorNode.Generate().Int64(),
+					Color:    UtilGetRandomColor(),
+					Username: uname,
+				}
+				chat.Users[chat.Sockets[ws].Username] = chat.Sockets[ws].Color
 				chat.Broadcast((&Event{
 					Name: "connected",
 					Data: map[string]interface{}{
-						"name":     chat.Sockets[ws][0],
+						"name":     chat.Sockets[ws].Username,
 						"nclients": len(chat.Sockets),
 						"clients":  chat.Users,
 						"history":  chat.History,
@@ -83,20 +92,33 @@ func main() {
 			// -> Attach username to message
 			// -> Broadcast the chat message to all users
 			ws.SetHandler("message", func(event *Event) {
-				username := chat.Sockets[ws][0]
-				color := chat.Sockets[ws][1]
+				// username := chat.Sockets[ws].Username
+				// color := chat.Sockets[ws].Color
 				if len(strings.Trim(event.Data.(string), " \t")) < 1 {
 					return
 				}
-				// event.Data = &Message{}
-				event.Data = map[string]interface{}{
-					"username":  username,
-					"timestamp": time.Now().Unix(),
-					"color":     color,
-					"message":   strings.Replace(event.Data.(string), "\\n", "\n", -1),
+				event.Data = &Message{
+					Author:    chat.Sockets[ws],
+					Content:   strings.Replace(event.Data.(string), "\\n", "\n", -1),
+					Timestamp: time.Now().Unix(),
+					ID:        messageNode.Generate().Int64(),
 				}
 				chat.Broadcast(event.Raw())
 				chat.AppendHistory(event)
+			})
+
+			ws.SetHandler("deleteMessage", func(event *Event) {
+				msgID := int64(event.Data.(float64))
+				msg, i := chat.GetMessageByID(msgID)
+				if msg == nil {
+					return
+				}
+				chat.History = append(chat.History[:i], chat.History[i+1:]...)
+				eventOut := &Event{
+					Name: "messageDeleted",
+					Data: msg,
+				}
+				chat.Broadcast(eventOut.Raw())
 			})
 
 			// DISCONNECT EVENT
