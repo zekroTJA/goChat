@@ -99,3 +99,12 @@ func (c *Chat) GetMessageByID(id int64) (*Event, int) {
 		return (e.Data.(*Message).ID == id)
 	})
 }
+
+func (c *Chat) DeleteMessageByID(id int64) *Event {
+	msg, i := c.GetMessageByID(id)
+	if msg == nil {
+		return nil
+	}
+	c.History = append(c.History[:i], c.History[i+1:]...)
+	return msg
+}

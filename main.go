@@ -1,6 +1,7 @@
 package main
 
 import (
+	"fmt"
 	"log"
 	"net/http"
 	"os"
@@ -68,7 +69,7 @@ func main() {
 				chat.Broadcast((&Event{
 					Name: "connected",
 					Data: map[string]interface{}{
-						"name":     chat.Sockets[ws].Username,
+						"author":   chat.Sockets[ws],
 						"nclients": len(chat.Sockets),
 						"clients":  chat.Users,
 						"history":  chat.History,
@@ -92,8 +93,6 @@ func main() {
 			// -> Attach username to message
 			// -> Broadcast the chat message to all users
 			ws.SetHandler("message", func(event *Event) {
-				// username := chat.Sockets[ws].Username
-				// color := chat.Sockets[ws].Color
 				if len(strings.Trim(event.Data.(string), " \t")) < 1 {
 					return
 				}
@@ -108,17 +107,18 @@ func main() {
 			})
 
 			ws.SetHandler("deleteMessage", func(event *Event) {
-				msgID := int64(event.Data.(float64))
-				msg, i := chat.GetMessageByID(msgID)
-				if msg == nil {
-					return
+				data := event.Data.(map[string]interface{})
+				msgID := int64(data["msgid"].(float64))
+				if msg := chat.DeleteMessageByID(msgID); msg != nil {
+					fmt.Println(msg.Data.(*Message).Author.ID, int64(data["userid"].(float64)))
+					if msg.Data.(*Message).Author.ID == int64(data["userid"].(float64)) {
+						eventOut := &Event{
+							Name: "messageDeleted",
+							Data: msg,
+						}
+						chat.Broadcast(eventOut.Raw())
+					}
 				}
-				chat.History = append(chat.History[:i], chat.History[i+1:]...)
-				eventOut := &Event{
-					Name: "messageDeleted",
-					Data: msg,
-				}
-				chat.Broadcast(eventOut.Raw())
 			})
 
 			// DISCONNECT EVENT

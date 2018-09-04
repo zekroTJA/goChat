@@ -78,9 +78,9 @@ var div_acc_create = $('#acc_create');
 var lb_connected = $('#lb_connected_counter');
 var ul_users_list = $('#ul_users_list');
 
-var lastMsgUsername = "";
-
-var myUsername = "";
+var lastMsgUsername;
+var myUsername;
+var currentUser;
 
 // ---------------------------------
 
@@ -95,15 +95,16 @@ ws.on('message', (data) => {
 
 ws.on('connected', (data) => {
     let elem = document.createElement('p');
-    elem.innerText = `[${data.name} CONNECTED]`;
+    elem.innerText = `[${data.author.username} CONNECTED]`;
     elem.className = 'message_tile status_msg';
     div_responses.appendChild(elem);
     updateUsersList(data.clients);
-    if (data.name == myUsername) {
+    if (data.author.username == myUsername) {
         if (data.history) {
-            console.log(data.history)
             data.history.forEach(msg => appendMessage(msg.data));
         }
+        currentUser = data.author;
+        console.log(currentUser)
         div_login.style.top = `-${window.innerHeight}px`;
         setTimeout(() => {
             div_login.style.display = "none";
@@ -240,11 +241,13 @@ function appendMessage(msgEvent) {
     if (msgEvent.author.username == myUsername) {
         let messageActionDiv = document.createElement('div');
         let deleteLink = document.createElement('a');
-        //deleteLink.href = "javasctipt:{}";
         deleteLink.onclick = () => {
             ws.emit({
                 event: 'deleteMessage',
-                data: msgEvent.id
+                data: { 
+                    msgid: msgEvent.id,
+                    userid: currentUser.id,
+                }
             });
         };
         deleteLink.innerText = "remove";
