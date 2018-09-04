@@ -223,7 +223,7 @@ function appendMessage(msgEvent) {
     if (msgEvent.content.includes('@' + myUsername)) {
         message.className += ' highlighted';
         let ops = {
-            body: String(message),
+            body: msgEvent.content,
             icon: "https://camo.githubusercontent.com/6490d7a3b892fd102a9ef1718aec3c41838639ee/68747470733a2f2f7a656b726f2e64652f7372632f676f5f636861745f6c6f676f2e706e67"
         }
         if (!("Notification" in window)) {
