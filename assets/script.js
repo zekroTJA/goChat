@@ -142,6 +142,11 @@ ws.on('usernameState', (data) => {
 
 });
 
+ws.on('spamTimeout', (data) => {
+    console.log('timeouted')
+    window.alert('spam timeouted');
+})
+
 f_name.onsubmit = (e) => {
     e.preventDefault();
     if (tb_name.value.length < 1 || tb_password.value.length < 1) {

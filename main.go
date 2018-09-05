@@ -96,14 +96,25 @@ func main() {
 				if len(strings.Trim(event.Data.(string), " \t")) < 1 {
 					return
 				}
+				author := chat.Sockets[ws]
+				if chat.TempHistoryLength(author.ID) > 10 {
+					go func() {
+						ws.Out <- (&Event{
+							Name: "spamTimeout",
+							Data: nil,
+						}).Raw()
+					}()
+					return
+				}
 				event.Data = &Message{
-					Author:    chat.Sockets[ws],
+					Author:    author,
 					Content:   strings.Replace(event.Data.(string), "\\n", "\n", -1),
 					Timestamp: time.Now().Unix(),
 					ID:        messageNode.Generate().Int64(),
 				}
 				chat.Broadcast(event.Raw())
 				chat.AppendHistory(event)
+				chat.EnqueueTempHistory(author.ID)
 			})
 
 			ws.SetHandler("deleteMessage", func(event *Event) {

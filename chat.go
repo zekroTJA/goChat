@@ -2,6 +2,7 @@ package main
 
 import (
 	"log"
+	"time"
 )
 
 const (
@@ -11,10 +12,11 @@ const (
 // Chat collects and handles all
 // websocket conenctions
 type Chat struct {
-	Sockets map[*WebSocket]*Author
-	Users   map[string]string
-	History []*Event
-	AccMgr  *AccountManager
+	Sockets     map[*WebSocket]*Author
+	Users       map[string]string
+	History     []*Event
+	TempHistory map[int64]map[int64]bool
+	AccMgr      *AccountManager
 }
 
 type Author struct {
@@ -33,9 +35,10 @@ type Message struct {
 // NewChat creates a new instance pointer of Chat
 func NewChat(accMgr *AccountManager) *Chat {
 	chat := &Chat{
-		Sockets: make(map[*WebSocket]*Author),
-		Users:   make(map[string]string),
-		AccMgr:  accMgr,
+		Sockets:     make(map[*WebSocket]*Author),
+		Users:       make(map[string]string),
+		AccMgr:      accMgr,
+		TempHistory: make(map[int64]map[int64]bool),
 	}
 	return chat
 }
@@ -107,4 +110,25 @@ func (c *Chat) DeleteMessageByID(id int64) *Event {
 	}
 	c.History = append(c.History[:i], c.History[i+1:]...)
 	return msg
+}
+
+func (c *Chat) EnqueueTempHistory(id int64) {
+	now := time.Now().UnixNano()
+	if len(c.TempHistory[id]) == 0 {
+		c.TempHistory[id] = map[int64]bool{
+			now: true,
+		}
+	} else {
+		c.TempHistory[id][now] = true
+	}
+	time.AfterFunc(10*time.Second, func() {
+		delete(c.TempHistory[id], now)
+	})
+}
+
+func (c *Chat) TempHistoryLength(id int64) int {
+	if c.TempHistory[id] == nil {
+		return 0
+	}
+	return len(c.TempHistory[id])
 }
