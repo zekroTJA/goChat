@@ -228,14 +228,18 @@ function appendMessage(msgEvent) {
     message.className = 'message';
     if (msgEvent.content.includes('@' + myUsername)) {
         message.className += ' highlighted';
+        let ops = {
+            body: msgEvent.content,
+            icon: "https://camo.githubusercontent.com/6490d7a3b892fd102a9ef1718aec3c41838639ee/68747470733a2f2f7a656b726f2e64652f7372632f676f5f636861745f6c6f676f2e706e67"
+        }
         if (!("Notification" in window)) {
             alert("This browser does not support desktop notification");
         } else if (Notification.permission === "granted") {
-            var notification = new Notification("You got pinged");
+            var notification = new Notification("You got pinged", ops);
         } else if (Notification.permission !== "denied") {
             Notification.requestPermission(function (permission) {
                 if (permission === "granted") {
-                    var notification = new Notification("You got pinged");
+                    var notification = new Notification("You got pinged", ops);
                 }
             });
         }
