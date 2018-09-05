@@ -70,7 +70,7 @@ $ go build -o gochat_server
 - [ ] Emojis + Emoji keywords
 - [ ] Multiple Chat Rooms
 - [ ] Logo as Favicon
-- [ ] Deletable Messages
+- [x] Deletable Messages
 - [ ] Editable Messages
 - [ ] Chat Administration
 - [ ] SSL Certification
