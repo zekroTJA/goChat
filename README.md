@@ -70,11 +70,13 @@ $ go build -o gochat_server
 - [ ] Emojis + Emoji keywords
 - [ ] Multiple Chat Rooms
 - [ ] Logo as Favicon
-- [x] Deletable Messages
 - [ ] Editable Messages
 - [ ] Chat Administration
 - [ ] SSL Certification
 - [ ] Light Design Mode *haha, nice joke :^)* 
+- [ ] Tests & Travis CI implementation
+- [x] Mention Notifications `(1.5)`
+- [x] Deletable Messages `(1.5)`
 - [x] Connected Users List `(1.4)`
 - [x] Link Highlighting `(1.4)`
 - [x] Mentions `(1.3)`
