@@ -74,7 +74,8 @@ $ go build -o gochat_server
 - [ ] Chat Administration
 - [ ] SSL Certification
 - [ ] Light Design Mode *haha, nice joke :^)* 
-- [ ] Tests & Travis CI implementation
+- [ ] Websocket Documentation
+- [x] Session System `(1.6)`
 - [x] Mention Notifications `(1.5)`
 - [x] Deletable Messages `(1.5)`
 - [x] Connected Users List `(1.4)`
