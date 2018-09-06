@@ -1,7 +1,6 @@
 package main
 
 import (
-	"fmt"
 	"log"
 	"net/http"
 	"os"
@@ -143,8 +142,7 @@ func main() {
 				data := event.Data.(map[string]interface{})
 				msgID := int64(data["msgid"].(float64))
 				if msg := chat.DeleteMessageByID(msgID); msg != nil {
-					fmt.Println(msg.Data.(*Message).Author.ID, int64(data["userid"].(float64)))
-					if msg.Data.(*Message).Author.ID == int64(data["userid"].(float64)) {
+					if msg.Data.(*Message).Author.ID == chat.Sockets[ws].ID {
 						eventOut := &Event{
 							Name: "messageDeleted",
 							Data: msg,

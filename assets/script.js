@@ -254,8 +254,7 @@ function appendMessage(msgEvent) {
             ws.emit({
                 event: 'deleteMessage',
                 data: { 
-                    msgid: msgEvent.id,
-                    userid: currentUser.id,
+                    msgid: msgEvent.id
                 }
             });
         };
