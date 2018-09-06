@@ -99,21 +99,21 @@ ws.on('connected', (data) => {
     elem.className = 'message_tile status_msg';
     div_responses.appendChild(elem);
     updateUsersList(data.clients);
-    if (data.author.username == myUsername) {
-        if (data.history) {
-            data.history.forEach(msg => appendMessage(msg.data));
-        }
-        currentUser = data.author;
-        console.log(currentUser)
-        div_login.style.top = `-${window.innerHeight}px`;
-        setTimeout(() => {
-            div_login.style.display = "none";
-        }, 750);
-        tb_name.autofocus = false;
-        tb_message.autofocus = true;
-        tb_message.focus();
-        lb_connected.innerText = data.nclients;
+});
+
+ws.on('clientConnect', (data) => {
+    if (data.history) {
+        data.history.forEach(msg => appendMessage(msg.data));
     }
+    currentUser = data.author;
+    div_login.style.top = `-${window.innerHeight}px`;
+    setTimeout(() => {
+        div_login.style.display = "none";
+    }, 750);
+    tb_name.autofocus = false;
+    tb_message.autofocus = true;
+    tb_message.focus();
+    lb_connected.innerText = data.nclients;
 });
 
 ws.on('connect_rejected', () => {

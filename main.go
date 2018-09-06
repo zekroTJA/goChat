@@ -38,6 +38,42 @@ func main() {
 	http.HandleFunc("/ws", func(w http.ResponseWriter, r *http.Request) {
 		if ws, err := NewWebSocket(chat, w, r); err == nil {
 			chat.Register(ws)
+			addr := strings.Split(r.RemoteAddr, ":")[0]
+
+			loginUser := func(uname string) {
+				chat.Sockets[ws] = &Author{
+					ID:       authorNode.Generate().Int64(),
+					Color:    UtilGetRandomColor(),
+					Username: uname,
+				}
+				chat.Login(chat.Sockets[ws], addr)
+				chat.Users[chat.Sockets[ws].Username] = chat.Sockets[ws].Color
+				go func() {
+					ws.Out <- (&Event{
+						Name: "clientConnect",
+						Data: map[string]interface{}{
+							"author":   chat.Sockets[ws],
+							"nclients": len(chat.Sockets),
+							"clients":  chat.Users,
+							"history":  chat.History,
+						},
+					}).Raw()
+				}()
+				chat.Broadcast((&Event{
+					Name: "connected",
+					Data: map[string]interface{}{
+						"author":   chat.Sockets[ws],
+						"nclients": len(chat.Sockets),
+						"clients":  chat.Users,
+					},
+				}).Raw())
+			}
+
+			if session, ok := chat.Sessions[addr]; ok {
+				time.AfterFunc(50*time.Millisecond, func() {
+					loginUser(session.Author.Username)
+				})
+			}
 
 			// USERNAME INPUT EVENT
 			// -> Checks if name is not connected yet
@@ -60,21 +96,7 @@ func main() {
 					}()
 					return
 				}
-				chat.Sockets[ws] = &Author{
-					ID:       authorNode.Generate().Int64(),
-					Color:    UtilGetRandomColor(),
-					Username: uname,
-				}
-				chat.Users[chat.Sockets[ws].Username] = chat.Sockets[ws].Color
-				chat.Broadcast((&Event{
-					Name: "connected",
-					Data: map[string]interface{}{
-						"author":   chat.Sockets[ws],
-						"nclients": len(chat.Sockets),
-						"clients":  chat.Users,
-						"history":  chat.History,
-					},
-				}).Raw())
+				loginUser(uname)
 			})
 
 			ws.SetHandler("checkUsername", func(event *Event) {

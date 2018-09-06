@@ -3,6 +3,8 @@ package main
 import (
 	"log"
 	"time"
+
+	"github.com/bwmarrin/snowflake"
 )
 
 const (
@@ -13,10 +15,17 @@ const (
 // websocket conenctions
 type Chat struct {
 	Sockets     map[*WebSocket]*Author
+	Sessions    map[string]*Session
 	Users       map[string]string
 	History     []*Event
 	TempHistory map[int64]map[int64]bool
 	AccMgr      *AccountManager
+}
+
+type Session struct {
+	ID     int64   `json:"id"`
+	Author *Author `json:"author"`
+	IPAddr string  `json:"ipaddr"`
 }
 
 type Author struct {
@@ -36,6 +45,7 @@ type Message struct {
 func NewChat(accMgr *AccountManager) *Chat {
 	chat := &Chat{
 		Sockets:     make(map[*WebSocket]*Author),
+		Sessions:    make(map[string]*Session),
 		Users:       make(map[string]string),
 		AccMgr:      accMgr,
 		TempHistory: make(map[int64]map[int64]bool),
@@ -53,7 +63,7 @@ func (c *Chat) Register(socket *WebSocket) {
 // and closes clients channels
 func (c *Chat) Unregister(socket *WebSocket, conerr ...bool) {
 	log.Printf("[SOCKET DISCONNECTED]")
-	if action, ok := socket.Events["disconnected"]; ok && len(conerr) == 0 {
+	if action, ok := socket.Events["disconnected"]; ok && len(conerr) == 0 && c.Sockets[socket] != nil {
 		action(&Event{
 			Name: "disconnected",
 			Data: map[string]interface{}{
@@ -62,16 +72,28 @@ func (c *Chat) Unregister(socket *WebSocket, conerr ...bool) {
 			},
 		})
 	}
-	// close(socket.Out)
-	// close(socket.In)
 	delete(c.Sockets, socket)
 	socket.Conn.Close()
+}
+
+func (c *Chat) Login(author *Author, addr string) {
+	node, _ := snowflake.NewNode(100)
+	id := node.Generate().Int64()
+	session := &Session{
+		Author: author,
+		ID:     id,
+		IPAddr: addr,
+	}
+	c.Sessions[addr] = session
+	time.AfterFunc(5*time.Minute, func() {
+		delete(c.Sessions, addr)
+	})
 }
 
 // Broadcast sends an event to all
 // connected clients
 func (c *Chat) Broadcast(message []byte) {
-	for s, _ := range c.Sockets {
+	for s := range c.Sockets {
 		select {
 		case s.Out <- message:
 		default:
