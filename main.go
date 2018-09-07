@@ -75,8 +75,7 @@ func main() {
 					cookies := strings.Split(dataMap["cookies"].(string), ";")
 					for _, c := range cookies {
 						if strings.HasPrefix(c, "gochat_session") {
-							if session, ok := chat.Sessions[strings.SplitN(c, "=", 1)[1]]; ok {
-								fmt.Println("LOGIN")
+							if session, ok := chat.Sessions[strings.Split(c, "=")[1]]; ok {
 								loginUser(session.Author.Username)
 							}
 						}

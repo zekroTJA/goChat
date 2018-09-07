@@ -1,6 +1,7 @@
 package main
 
 import (
+	"fmt"
 	"log"
 	"net/http"
 	"strconv"
@@ -89,6 +90,7 @@ func (c *Chat) Login(ws *WebSocket, author *Author, addr string) {
 		IPAddr: addr,
 		Hash:   hash,
 	}
+	fmt.Println("create cookie")
 	go func() {
 		ws.Out <- (&Event{
 			Name: "createCookie",
