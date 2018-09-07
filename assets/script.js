@@ -89,6 +89,15 @@ ws.ws.onclose = () => {
     window.location = "/";
 };
 
+ws.ws.onopen = () => {
+    ws.emit({
+        event: "tryAutoLogin",
+        data: {
+            cookies: document.cookie
+        }
+    });
+}
+
 ws.on('message', (data) => {
     appendMessage(data);
 });
@@ -143,9 +152,12 @@ ws.on('usernameState', (data) => {
 });
 
 ws.on('spamTimeout', (data) => {
-    console.log('timeouted')
     window.alert('spam timeouted');
-})
+});
+
+ws.on('createCookie', (data) => {
+    document.cookie = data;
+});
 
 f_name.onsubmit = (e) => {
     e.preventDefault();
@@ -159,6 +171,7 @@ f_name.onsubmit = (e) => {
         data: {
             username: myUsername,
             password: tb_password.value,
+            cookie: document.cookies
         },
     });
 };

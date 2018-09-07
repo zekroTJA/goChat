@@ -1,6 +1,7 @@
 package main
 
 import (
+	"fmt"
 	"log"
 	"net/http"
 	"os"
@@ -45,7 +46,7 @@ func main() {
 					Color:    UtilGetRandomColor(),
 					Username: uname,
 				}
-				chat.Login(chat.Sockets[ws], addr)
+				chat.Login(ws, chat.Sockets[ws], addr)
 				chat.Users[chat.Sockets[ws].Username] = chat.Sockets[ws].Color
 				go func() {
 					ws.Out <- (&Event{
@@ -68,11 +69,20 @@ func main() {
 				}).Raw())
 			}
 
-			if session, ok := chat.Sessions[addr]; ok {
-				time.AfterFunc(50*time.Millisecond, func() {
-					loginUser(session.Author.Username)
-				})
-			}
+			ws.SetHandler("tryAutoLogin", func(event *Event) {
+				dataMap := event.Data.(map[string]interface{})
+				if dataMap["cookies"] != nil {
+					cookies := strings.Split(dataMap["cookies"].(string), ";")
+					for _, c := range cookies {
+						if strings.HasPrefix(c, "gochat_session") {
+							if session, ok := chat.Sessions[strings.SplitN(c, "=", 1)[1]]; ok {
+								fmt.Println("LOGIN")
+								loginUser(session.Author.Username)
+							}
+						}
+					}
+				}
+			})
 
 			// USERNAME INPUT EVENT
 			// -> Checks if name is not connected yet
@@ -82,6 +92,7 @@ func main() {
 				dataMap := event.Data.(map[string]interface{})
 				uname := dataMap["username"].(string)
 				passwd := dataMap["password"].(string)
+
 				acc, valid := accMgr.Check(uname, passwd)
 				if acc == nil {
 					accMgr.Register(uname, passwd)

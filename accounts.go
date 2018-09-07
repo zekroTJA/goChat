@@ -1,9 +1,7 @@
 package main
 
 import (
-	"crypto/sha256"
 	"encoding/json"
-	"fmt"
 	"os"
 	"strings"
 )
@@ -38,7 +36,7 @@ func NewAccountManager(filename string) (*AccountManager, error) {
 }
 
 func (mgr *AccountManager) Register(username, password string) {
-	passhash := createHash(password)
+	passhash := CreateHash(password)
 	mgr.accounts[strings.ToLower(username)] = &Acc{
 		Username: username,
 		Passhash: passhash,
@@ -56,7 +54,7 @@ func (mgr *AccountManager) Check(username, password string) (*Acc, bool) {
 	if acc == nil {
 		return nil, false
 	}
-	valid := acc.Passhash == createHash(password)
+	valid := acc.Passhash == CreateHash(password)
 	return acc, valid
 }
 
@@ -70,10 +68,4 @@ func (mgr *AccountManager) Save() error {
 	encoder.SetIndent("", "  ")
 	err = encoder.Encode(mgr.accounts)
 	return err
-}
-
-func createHash(data string) string {
-	hasher := sha256.New()
-	hasher.Write([]byte(data))
-	return fmt.Sprintf("%x", hasher.Sum(nil))
 }

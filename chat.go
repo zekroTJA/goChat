@@ -2,6 +2,8 @@ package main
 
 import (
 	"log"
+	"net/http"
+	"strconv"
 	"time"
 
 	"github.com/bwmarrin/snowflake"
@@ -26,6 +28,7 @@ type Session struct {
 	ID     int64   `json:"id"`
 	Author *Author `json:"author"`
 	IPAddr string  `json:"ipaddr"`
+	Hash   string  `json:"hash"`
 }
 
 type Author struct {
@@ -76,17 +79,30 @@ func (c *Chat) Unregister(socket *WebSocket, conerr ...bool) {
 	socket.Conn.Close()
 }
 
-func (c *Chat) Login(author *Author, addr string) {
+func (c *Chat) Login(ws *WebSocket, author *Author, addr string) {
 	node, _ := snowflake.NewNode(100)
 	id := node.Generate().Int64()
+	hash := CreateHash(strconv.FormatInt(id, 10), author.Username, addr)
 	session := &Session{
 		Author: author,
 		ID:     id,
 		IPAddr: addr,
+		Hash:   hash,
 	}
-	c.Sessions[addr] = session
-	time.AfterFunc(5*time.Minute, func() {
-		delete(c.Sessions, addr)
+	go func() {
+		ws.Out <- (&Event{
+			Name: "createCookie",
+			Data: (&http.Cookie{
+				Name:     "gochat_session",
+				Value:    hash,
+				Expires:  time.Now().Add(SESSION_TIMEOUT),
+				HttpOnly: false,
+			}).String(),
+		}).Raw()
+	}()
+	c.Sessions[hash] = session
+	time.AfterFunc(SESSION_TIMEOUT, func() {
+		delete(c.Sessions, hash)
 	})
 }
 

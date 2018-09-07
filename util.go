@@ -1,6 +1,10 @@
 package main
 
-import "math/rand"
+import (
+	"crypto/sha256"
+	"fmt"
+	"math/rand"
+)
 
 func UtilGetRandomColor() string {
 	colors := []string{
@@ -42,4 +46,14 @@ func UtilGetRandomColor() string {
 		"rgba(255, 255, 255, 0.5)", "#ffffff", "#000000"}
 
 	return colors[rand.Intn(len(colors)-1)]
+}
+
+func CreateHash(data ...string) string {
+	assembled := ""
+	for _, d := range data {
+		assembled += d
+	}
+	hasher := sha256.New()
+	hasher.Write([]byte(assembled))
+	return fmt.Sprintf("%x", hasher.Sum(nil))
 }
